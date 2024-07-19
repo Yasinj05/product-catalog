@@ -24,6 +24,9 @@ export class Item {
   @Column({ type: "decimal", precision: 15, scale: 2 })
   price!: number;
 
+  @Column({ type: "int", default: 0 })
+  maxStockThreshold!: number;
+
   @ManyToMany(() => Category)
   @JoinTable()
   categories!: Category[];
