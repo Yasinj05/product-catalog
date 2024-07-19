@@ -1,5 +1,6 @@
-import { Brand } from "../entities/Brand";
 import { AppDataSource } from "../utils/db";
+import { Brand } from "../entities/Brand";
+import { DeleteResult } from "typeorm";
 
 export class BrandService {
   private brandRepository = AppDataSource.getRepository(Brand);
@@ -21,7 +22,7 @@ export class BrandService {
     return this.brandRepository.findOneBy({ id });
   }
 
-  async delete(id: number) {
-    await this.brandRepository.delete({ id });
+  async delete(id: number): Promise<DeleteResult> {
+    return this.brandRepository.delete(id);
   }
 }
