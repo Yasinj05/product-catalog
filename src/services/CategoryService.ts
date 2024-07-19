@@ -1,10 +1,11 @@
 import { Category } from "../entities/Category";
 import { AppDataSource } from "../utils/db";
+import { DeleteResult } from "typeorm";
 
 export class CategoryService {
   private categoryRepository = AppDataSource.getRepository(Category);
 
-  async create(id: number, category: Category) {
+  async create(category: Category) {
     return this.categoryRepository.save(category);
   }
 
@@ -24,7 +25,7 @@ export class CategoryService {
     });
   }
 
-  async delete(id: number) {
-    await this.categoryRepository.delete({ id });
+  async delete(id: number): Promise<DeleteResult> {
+    return this.categoryRepository.delete(id);
   }
 }
