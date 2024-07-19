@@ -1,14 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
-import { Item } from "./Item";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 
-@Entity()
+@Entity("categories")
 export class Category {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  name!: string;
+  @Column({ length: 100 })
+  category!: string;
 
-  @ManyToMany(() => Item, (item) => item.categories)
-  items!: Item[];
+  @Column({ nullable: true })
+  parentId!: number;
+
+  @ManyToOne(() => Category, (category) => category.children)
+  parent!: Category;
+
+  @OneToMany(() => Category, (category) => category.parent)
+  children!: Category[];
 }

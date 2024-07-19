@@ -2,25 +2,32 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   ManyToMany,
   JoinTable,
 } from "typeorm";
-import { Brand } from "./Brand";
 import { Category } from "./Category";
 
-@Entity()
+@Entity("items")
 export class Item {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ length: 150 })
+  slug!: string;
+
+  @Column({ length: 100 })
   name!: string;
 
-  @ManyToOne(() => Brand, (brand) => brand.items)
-  brand!: Brand;
+  @Column({ length: 5000 })
+  description!: string;
 
-  @ManyToMany(() => Category, (category) => category.items)
+  @Column({ type: "decimal", precision: 15, scale: 2 })
+  price!: number;
+
+  @ManyToMany(() => Category)
   @JoinTable()
   categories!: Category[];
+
+  @Column("simple-json", { nullable: true })
+  medias!: { name: string; url: string }[];
 }
