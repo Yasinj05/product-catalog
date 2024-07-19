@@ -14,14 +14,17 @@ export class CategoryService {
   }
 
   async findAll() {
-    return this.categoryRepository.find();
+    return this.categoryRepository.find({ relations: ["children"] });
   }
 
   async findOne(id: number) {
-    return this.categoryRepository.findOneBy({ id });
+    return this.categoryRepository.findOne({
+      where: { id },
+      relations: ["children"],
+    });
   }
 
   async delete(id: number) {
-    return this.categoryRepository.findOneBy({ id });
+    return this.categoryRepository.delete({ id });
   }
 }
