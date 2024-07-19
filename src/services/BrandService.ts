@@ -22,6 +22,6 @@ export class BrandService {
   }
 
   async delete(id: number) {
-    return this.brandRepository.delete({ id });
+    await this.brandRepository.delete({ id });
   }
 }

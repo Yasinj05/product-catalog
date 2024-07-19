@@ -25,6 +25,6 @@ export class CategoryService {
   }
 
   async delete(id: number) {
-    return this.categoryRepository.delete({ id });
+    await this.categoryRepository.delete({ id });
   }
 }
