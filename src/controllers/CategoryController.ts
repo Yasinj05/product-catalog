@@ -6,20 +6,6 @@ const categoryService = new CategoryService();
 export class CategoryController {
   async create(req: Request, res: Response) {
     try {
-      const { category, parentId } = req.body;
-
-      // Input validation
-      if (typeof category !== "string" || category.trim() === "") {
-        return res.status(400).json({ message: "Invalid category name" });
-      }
-      if (
-        parentId !== undefined &&
-        parentId !== null &&
-        typeof parentId !== "number"
-      ) {
-        return res.status(400).json({ message: "Invalid parentId" });
-      }
-
       const newCategory = await categoryService.create(req.body);
       res.status(201).json(newCategory);
     } catch (error) {
@@ -30,20 +16,6 @@ export class CategoryController {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { category, parentId } = req.body;
-
-      // Input validation
-      if (typeof category !== "string" || category.trim() === "") {
-        return res.status(400).json({ message: "Invalid category name" });
-      }
-      if (
-        parentId !== undefined &&
-        parentId !== null &&
-        typeof parentId !== "number"
-      ) {
-        return res.status(400).json({ message: "Invalid parentId" });
-      }
-
       const updatedCategory = await categoryService.update(
         Number(id),
         req.body
