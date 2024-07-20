@@ -1,5 +1,6 @@
 import { AppDataSource } from "../utils/db";
 import { Item } from "../entities/Item";
+import { DeleteResult } from "typeorm";
 
 export class ItemService {
   private itemRepository = AppDataSource.getRepository(Item);
@@ -24,8 +25,8 @@ export class ItemService {
     });
   }
 
-  async delete(id: number) {
-    await this.itemRepository.delete(id);
+  async delete(id: number): Promise<DeleteResult> {
+    return this.itemRepository.delete(id);
   }
 
   async updateMaxStockThreshold(id: number, maxStockThreshold: number) {
