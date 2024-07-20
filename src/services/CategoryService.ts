@@ -1,6 +1,5 @@
 import { Category } from "../entities/Category";
 import { AppDataSource } from "../utils/db";
-import { DeleteResult } from "typeorm";
 
 export class CategoryService {
   private categoryRepository = AppDataSource.getRepository(Category);
