@@ -28,4 +28,8 @@ export class CategoryService {
     const result = await this.categoryRepository.delete(id);
     return { affected: result.affected || 0 };
   }
+
+  async findByName(name: string) {
+    return this.categoryRepository.findOne({ where: { category: name } });
+  }
 }
