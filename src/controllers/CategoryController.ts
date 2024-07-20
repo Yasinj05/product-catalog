@@ -6,8 +6,22 @@ const categoryService = new CategoryService();
 export class CategoryController {
   async create(req: Request, res: Response) {
     try {
-      const category = await categoryService.create(req.body);
-      res.status(201).json(category);
+      const { category, parentId } = req.body;
+
+      // Input validation
+      if (typeof category !== "string" || category.trim() === "") {
+        return res.status(400).json({ message: "Invalid category name" });
+      }
+      if (
+        parentId !== undefined &&
+        parentId !== null &&
+        typeof parentId !== "number"
+      ) {
+        return res.status(400).json({ message: "Invalid parentId" });
+      }
+
+      const newCategory = await categoryService.create(req.body);
+      res.status(201).json(newCategory);
     } catch (error) {
       this.handleError(res, error, "Error creating category");
     }
@@ -16,9 +30,26 @@ export class CategoryController {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const category = await categoryService.update(Number(id), req.body);
-      if (category) {
-        res.json(category);
+      const { category, parentId } = req.body;
+
+      // Input validation
+      if (typeof category !== "string" || category.trim() === "") {
+        return res.status(400).json({ message: "Invalid category name" });
+      }
+      if (
+        parentId !== undefined &&
+        parentId !== null &&
+        typeof parentId !== "number"
+      ) {
+        return res.status(400).json({ message: "Invalid parentId" });
+      }
+
+      const updatedCategory = await categoryService.update(
+        Number(id),
+        req.body
+      );
+      if (updatedCategory) {
+        res.json(updatedCategory);
       } else {
         res.status(404).json({ message: "Category not found" });
       }
@@ -55,7 +86,7 @@ export class CategoryController {
       const { id } = req.params;
       const result = await categoryService.delete(Number(id));
       if (result.affected === 1) {
-        res.sendStatus(204);
+        res.status(200).json({ message: "Category deleted successfully" });
       } else {
         res.status(404).json({ message: "Category not found" });
       }

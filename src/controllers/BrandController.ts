@@ -7,10 +7,15 @@ export class BrandController {
   async create(req: Request, res: Response) {
     try {
       const { brand } = req.body;
+
+      // Input validation
+      if (typeof brand !== "string" || brand.trim() === "") {
+        return res.status(400).json({ message: "Invalid brand name" });
+      }
+
       const existingBrand = await brandService.findByName(brand);
       if (existingBrand) {
-        res.status(400).json({ message: "Brand already exists" });
-        return;
+        return res.status(400).json({ message: "Brand already exists" });
       }
 
       const newBrand = await brandService.create(req.body);
@@ -24,10 +29,15 @@ export class BrandController {
     try {
       const { id } = req.params;
       const { brand } = req.body;
+
+      // Input validation
+      if (typeof brand !== "string" || brand.trim() === "") {
+        return res.status(400).json({ message: "Invalid brand name" });
+      }
+
       const existingBrand = await brandService.findByName(brand);
       if (existingBrand && existingBrand.id !== Number(id)) {
-        res.status(400).json({ message: "Brand already exists" });
-        return;
+        return res.status(400).json({ message: "Brand already exists" });
       }
 
       const updatedBrand = await brandService.update(Number(id), req.body);
