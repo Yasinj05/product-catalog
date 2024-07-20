@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { BrandService } from "../services/BrandService";
 
 const brandService = new BrandService();
@@ -6,24 +6,38 @@ const brandService = new BrandService();
 export class BrandController {
   async create(req: Request, res: Response) {
     try {
-      const brand = await brandService.create(req.body);
-      res.status(201).json(brand);
+      const { brand } = req.body;
+      const existingBrand = await brandService.findByName(brand);
+      if (existingBrand) {
+        res.status(400).json({ message: "Brand already exists" });
+        return;
+      }
+
+      const newBrand = await brandService.create(req.body);
+      res.status(201).json(newBrand);
     } catch (error) {
       this.handleError(res, error, "Error creating brand");
     }
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const brand = await brandService.update(Number(id), req.body);
-      if (brand) {
-        res.json(brand);
+      const { brand } = req.body;
+      const existingBrand = await brandService.findByName(brand);
+      if (existingBrand && existingBrand.id !== Number(id)) {
+        res.status(400).json({ message: "Brand already exists" });
+        return;
+      }
+
+      const updatedBrand = await brandService.update(Number(id), req.body);
+      if (updatedBrand) {
+        res.json(updatedBrand);
       } else {
         res.status(404).json({ message: "Brand not found" });
       }
     } catch (error) {
-      this.handleError(res, error, "Error updating brand");
+      next(error);
     }
   }
 
@@ -55,7 +69,7 @@ export class BrandController {
       const { id } = req.params;
       const result = await brandService.delete(Number(id));
       if (result.affected === 1) {
-        res.sendStatus(204);
+        res.status(200).json({ message: "Brand deleted successfully" });
       } else {
         res.status(404).json({ message: "Brand not found" });
       }
