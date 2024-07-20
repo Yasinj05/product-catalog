@@ -25,7 +25,8 @@ export class CategoryService {
     });
   }
 
-  async delete(id: number): Promise<DeleteResult> {
-    return this.categoryRepository.delete(id);
+  async delete(id: number): Promise<{ affected: number }> {
+    const result = await this.categoryRepository.delete(id);
+    return { affected: result.affected || 0 };
   }
 }
