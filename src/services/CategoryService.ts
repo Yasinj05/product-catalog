@@ -29,7 +29,7 @@ export class CategoryService {
     return { affected: result.affected || 0 };
   }
 
-  async findByName(name: string) {
-    return this.categoryRepository.findOne({ where: { category: name } });
+  async findByName(category: string) {
+    return this.categoryRepository.findOne({ where: { category } });
   }
 }
