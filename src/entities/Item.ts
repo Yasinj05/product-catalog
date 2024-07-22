@@ -4,8 +4,10 @@ import {
   Column,
   ManyToMany,
   JoinTable,
+  ManyToOne,
 } from "typeorm";
 import { Category } from "./Category";
+import { Brand } from "./Brand";
 
 @Entity("items")
 export class Item {
@@ -33,4 +35,7 @@ export class Item {
 
   @Column("simple-json", { nullable: true })
   medias!: { name: string; url: string }[];
+
+  @ManyToOne(() => Brand, (brand) => brand.items)
+  brand!: Brand;
 }
