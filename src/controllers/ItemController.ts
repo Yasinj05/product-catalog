@@ -51,7 +51,7 @@ export class ItemController {
       const { id } = req.params;
       const result = await itemService.delete(Number(id));
       if (result.affected === 1) {
-        res.sendStatus(204);
+        res.status(200).json({ message: "Item deleted successfully" });
       } else {
         res.status(404).json({ message: "Item not found" });
       }
