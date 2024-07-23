@@ -2,7 +2,6 @@ import { AppDataSource } from "../utils/db";
 import { Item } from "../entities/Item";
 import { Category } from "../entities/Category";
 import { Brand } from "../entities/Brand";
-import { In } from "typeorm";
 
 export class ItemService {
   private itemRepository = AppDataSource.getRepository(Item);
@@ -10,26 +9,30 @@ export class ItemService {
   private brandRepository = AppDataSource.getRepository(Brand);
 
   async create(itemData: Partial<Item>) {
-    const { categories, brand, ...rest } = itemData;
+    const { category: categoryId, brand: brandId, ...rest } = itemData;
 
-    let categoryEntities: Category[] = [];
-    if (categories && categories.length > 0) {
-      // Use findBy to get multiple categories
-      categoryEntities = await this.categoryRepository.findBy({
-        id: In(categories.map((id) => Number(id))),
+    // Handle category (assuming a single category here)
+    let categoryEntity: Category | undefined;
+    if (typeof categoryId === "number") {
+      const category = await this.categoryRepository.findOne({
+        where: { id: categoryId },
       });
+      categoryEntity = category ?? undefined;
     }
 
+    // Handle brand
     let brandEntity: Brand | undefined;
-    if (brand) {
-      brandEntity =
-        (await this.brandRepository.findOneBy({ id: Number(brand) })) ??
-        undefined;
+    if (typeof brandId === "number") {
+      const brand = await this.brandRepository.findOne({
+        where: { id: brandId },
+      });
+      brandEntity = brand ?? undefined;
     }
 
+    // Create the item
     const item = this.itemRepository.create({
       ...rest,
-      categories: categoryEntities,
+      category: categoryEntity,
       brand: brandEntity,
     });
 
@@ -37,43 +40,49 @@ export class ItemService {
   }
 
   async update(id: number, itemData: Partial<Item>) {
-    const { categories, brand, ...rest } = itemData;
+    const { category: categoryId, brand: brandId, ...rest } = itemData;
 
-    let categoryEntities: Category[] = [];
-    if (categories && categories.length > 0) {
-      // Use findBy to get multiple categories
-      categoryEntities = await this.categoryRepository.findBy({
-        id: In(categories.map((id) => Number(id))),
+    // Handle category (assuming a single category here)
+    let categoryEntity: Category | undefined;
+    if (typeof categoryId === "number") {
+      const category = await this.categoryRepository.findOne({
+        where: { id: categoryId },
       });
+      categoryEntity = category ?? undefined;
     }
 
+    // Handle brand
     let brandEntity: Brand | undefined;
-    if (brand) {
-      brandEntity =
-        (await this.brandRepository.findOneBy({ id: Number(brand) })) ??
-        undefined;
+    if (typeof brandId === "number") {
+      const brand = await this.brandRepository.findOne({
+        where: { id: brandId },
+      });
+      brandEntity = brand ?? undefined;
     }
 
+    // Update the item
     await this.itemRepository.update(id, {
       ...rest,
+      category: categoryEntity,
+      brand: brandEntity,
     });
 
     return this.itemRepository.findOne({
       where: { id },
-      relations: ["categories", "brand"],
+      relations: ["category", "brand"],
     });
   }
 
   async findAll() {
     return this.itemRepository.find({
-      relations: ["categories", "brand"],
+      relations: ["category", "brand"],
     });
   }
 
   async findOne(id: number) {
     return this.itemRepository.findOne({
       where: { id },
-      relations: ["categories", "brand"],
+      relations: ["category", "brand"],
     });
   }
 
@@ -82,18 +91,11 @@ export class ItemService {
     return { affected: result.affected || 0 };
   }
 
-  async findByName(name: string) {
-    return this.itemRepository.findOne({
-      where: { name },
-      relations: ["categories", "brand"],
-    });
-  }
-
   async updateMaxStockThreshold(id: number, maxStockThreshold: number) {
     await this.itemRepository.update(id, { maxStockThreshold });
     return this.itemRepository.findOne({
       where: { id },
-      relations: ["categories", "brand"],
+      relations: ["category", "brand"],
     });
   }
 }

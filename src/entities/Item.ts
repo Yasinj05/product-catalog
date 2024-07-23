@@ -1,11 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  JoinTable,
-  ManyToOne,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { Category } from "./Category";
 import { Brand } from "./Brand";
 
@@ -29,9 +22,8 @@ export class Item {
   @Column({ type: "int", default: 0 })
   maxStockThreshold!: number;
 
-  @ManyToMany(() => Category)
-  @JoinTable()
-  categories!: Category[];
+  @ManyToOne(() => Category)
+  category!: Category;
 
   @Column("simple-json", { nullable: true })
   medias!: { name: string; url: string }[];

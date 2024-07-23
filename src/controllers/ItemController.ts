@@ -12,6 +12,7 @@ export class ItemController {
       this.handleError(res, error, "Error creating item");
     }
   }
+
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -25,6 +26,7 @@ export class ItemController {
       this.handleError(res, error, "Error updating item");
     }
   }
+
   async findAll(req: Request, res: Response) {
     try {
       const items = await itemService.findAll();
@@ -33,6 +35,7 @@ export class ItemController {
       this.handleError(res, error, "Error fetching items");
     }
   }
+
   async findOne(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -46,6 +49,7 @@ export class ItemController {
       this.handleError(res, error, "Error fetching item");
     }
   }
+
   async delete(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -59,6 +63,7 @@ export class ItemController {
       this.handleError(res, error, "Error deleting item");
     }
   }
+
   async updateMaxStockThreshold(req: Request, res: Response) {
     try {
       const { id } = req.params;
