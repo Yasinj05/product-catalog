@@ -11,25 +11,13 @@ export class ItemService {
   async create(itemData: Partial<Item>) {
     const { category: categoryId, brand: brandId, ...rest } = itemData;
 
-    // Handle category (assuming a single category here)
-    let categoryEntity: Category | undefined;
-    if (typeof categoryId === "number") {
-      const category = await this.categoryRepository.findOne({
-        where: { id: categoryId },
-      });
-      categoryEntity = category ?? undefined;
-    }
+    const categoryEntity = await this.getCategoryEntity(
+      categoryId as number | undefined
+    );
+    const brandEntity = await this.getBrandEntity(
+      brandId as number | undefined
+    );
 
-    // Handle brand
-    let brandEntity: Brand | undefined;
-    if (typeof brandId === "number") {
-      const brand = await this.brandRepository.findOne({
-        where: { id: brandId },
-      });
-      brandEntity = brand ?? undefined;
-    }
-
-    // Create the item
     const item = this.itemRepository.create({
       ...rest,
       category: categoryEntity,
@@ -42,25 +30,16 @@ export class ItemService {
   async update(id: number, itemData: Partial<Item>) {
     const { category: categoryId, brand: brandId, ...rest } = itemData;
 
-    // Handle category (assuming a single category here)
-    let categoryEntity: Category | undefined;
-    if (typeof categoryId === "number") {
-      const category = await this.categoryRepository.findOne({
-        where: { id: categoryId },
-      });
-      categoryEntity = category ?? undefined;
-    }
+    const categoryEntity = await this.getCategoryEntity(
+      categoryId as number | undefined
+    );
+    const brandEntity = await this.getBrandEntity(
+      brandId as number | undefined
+    );
 
-    // Handle brand
-    let brandEntity: Brand | undefined;
-    if (typeof brandId === "number") {
-      const brand = await this.brandRepository.findOne({
-        where: { id: brandId },
-      });
-      brandEntity = brand ?? undefined;
-    }
+    const item = await this.itemRepository.findOne({ where: { id } });
+    if (!item) return null;
 
-    // Update the item
     await this.itemRepository.update(id, {
       ...rest,
       category: categoryEntity,
@@ -97,5 +76,26 @@ export class ItemService {
       where: { id },
       relations: ["category", "brand"],
     });
+  }
+
+  private async getCategoryEntity(categoryId?: number) {
+    if (typeof categoryId === "number") {
+      return (
+        (await this.categoryRepository.findOne({
+          where: { id: categoryId },
+        })) ?? undefined
+      );
+    }
+    return undefined;
+  }
+
+  private async getBrandEntity(brandId?: number) {
+    if (typeof brandId === "number") {
+      return (
+        (await this.brandRepository.findOne({ where: { id: brandId } })) ??
+        undefined
+      );
+    }
+    return undefined;
   }
 }
