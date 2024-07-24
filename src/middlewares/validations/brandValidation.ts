@@ -1,47 +1,62 @@
+import Joi from "joi";
 import { Request, Response, NextFunction } from "express";
-import { BrandService } from "../../services/BrandService";
+import { AppDataSource } from "../../utils/db";
+import { Brand } from "../../entities/Brand";
 
-const brandService = new BrandService();
+export const createBrandSchema = Joi.object({
+  brand: Joi.string().max(100).required(),
+});
 
-export const validateCreateBrand = async (
+export const updateBrandSchema = Joi.object({
+  brand: Joi.string().max(100).optional(),
+});
+
+async function brandExists(brandName: string): Promise<boolean> {
+  const brandRepository = AppDataSource.getRepository(Brand);
+  const existingBrand = await brandRepository.findOne({
+    where: { brand: brandName },
+  });
+  return existingBrand !== null;
+}
+
+export async function validateCreateBrand(
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+) {
   const { brand } = req.body;
 
-  // Input validation
-  if (typeof brand !== "string" || brand.trim() === "") {
-    return res.status(400).json({ message: "Invalid brand name" });
+  const { error } = createBrandSchema.validate(req.body);
+  if (error) {
+    return res
+      .status(400)
+      .json({ message: "Validation error", details: error.details });
   }
 
-  // Check for existing brand
-  const existingBrand = await brandService.findByName(brand);
-  if (existingBrand) {
+  if (await brandExists(brand)) {
     return res.status(400).json({ message: "Brand already exists" });
   }
 
   next();
-};
+}
 
-export const validateUpdateBrand = async (
+export async function validateUpdateBrand(
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  const { id } = req.params;
+) {
   const { brand } = req.body;
 
-  // Input validation
-  if (typeof brand !== "string" || brand.trim() === "") {
-    return res.status(400).json({ message: "Invalid brand name" });
+  const { error } = updateBrandSchema.validate(req.body);
+  if (error) {
+    return res
+      .status(400)
+      .json({ message: "Validation error", details: error.details });
   }
 
-  // Check for existing brand
-  const existingBrand = await brandService.findByName(brand);
-  if (existingBrand && existingBrand.id !== Number(id)) {
+  if (brand && (await brandExists(brand))) {
     return res.status(400).json({ message: "Brand already exists" });
   }
 
   next();
-};
+}
