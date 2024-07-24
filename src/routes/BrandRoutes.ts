@@ -3,7 +3,7 @@ import { BrandController } from "../controllers/BrandController";
 import {
   validateCreateBrand,
   validateUpdateBrand,
-} from "../validations/brandValidation";
+} from "../middlwares/validations/brandValidation";
 
 const router = Router();
 const brandController = new BrandController();

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { BrandService } from "../services/BrandService";
+import { BrandService } from "../../services/BrandService";
 
 const brandService = new BrandService();
 
