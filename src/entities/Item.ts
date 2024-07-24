@@ -20,7 +20,7 @@ export class Item {
   price!: number;
 
   @Column({ type: "int", default: 0 })
-  maxStockThreshold!: number;
+  stockQuantity!: number;
 
   @ManyToOne(() => Category)
   category!: Category;

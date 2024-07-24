@@ -70,8 +70,8 @@ export class ItemService {
     return { affected: result.affected || 0 };
   }
 
-  async updateMaxStockThreshold(id: number, maxStockThreshold: number) {
-    await this.itemRepository.update(id, { maxStockThreshold });
+  async updateStockQuantity(id: number, stockQuantity: number) {
+    await this.itemRepository.update(id, { stockQuantity });
     return this.itemRepository.findOne({
       where: { id },
       relations: ["category", "brand"],

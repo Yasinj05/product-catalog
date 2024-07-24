@@ -64,11 +64,11 @@ export class ItemController {
     }
   }
 
-  async updateMaxStockThreshold(req: Request, res: Response) {
+  async updateStockQuantity(req: Request, res: Response) {
     try {
       const { id } = req.params;
       const { maxStockThreshold } = req.body;
-      const item = await itemService.updateMaxStockThreshold(
+      const item = await itemService.updateStockQuantity(
         Number(id),
         maxStockThreshold
       );
