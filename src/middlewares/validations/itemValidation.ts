@@ -75,7 +75,6 @@ export async function validateUpdateItem(
   res: Response,
   next: NextFunction
 ) {
-  const { slug, name } = req.body;
   const { id } = req.params;
 
   const { error } = updateItemSchema.validate(req.body);
@@ -83,12 +82,6 @@ export async function validateUpdateItem(
     return res
       .status(400)
       .json({ message: "Validation error", details: error.details });
-  }
-
-  if ((slug || name) && (await itemExists(slug, name))) {
-    return res
-      .status(400)
-      .json({ message: "Item with the same slug or name already exists" });
   }
 
   next();
