@@ -8,18 +8,20 @@ import {
 const router = Router();
 const brandController = new BrandController();
 
-router.post(
-  "/brands",
-  validateCreateBrand,
-  brandController.create.bind(brandController)
+router.post("/brands", validateCreateBrand, (req, res, next) =>
+  brandController.create(req, res, next).catch(next)
 );
-router.put(
-  "/brands/:id",
-  validateUpdateBrand,
-  brandController.update.bind(brandController)
+router.put("/brands/:id", validateUpdateBrand, (req, res, next) =>
+  brandController.update(req, res, next).catch(next)
 );
-router.get("/brands", brandController.findAll.bind(brandController));
-router.get("/brands/:id", brandController.findOne.bind(brandController));
-router.delete("/brands/:id", brandController.delete.bind(brandController));
+router.get("/brands", (req, res, next) =>
+  brandController.findAll(req, res, next).catch(next)
+);
+router.get("/brands/:id", (req, res, next) =>
+  brandController.findOne(req, res, next).catch(next)
+);
+router.delete("/brands/:id", (req, res, next) =>
+  brandController.delete(req, res, next).catch(next)
+);
 
 export default router;
