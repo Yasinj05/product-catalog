@@ -1,61 +1,64 @@
+import Joi from "joi";
 import { Request, Response, NextFunction } from "express";
-import { CategoryService } from "../../services/CategoryService";
+import { AppDataSource } from "../../utils/db";
+import { Category } from "../../entities/Category";
 
-const categoryService = new CategoryService();
+export const createCategorySchema = Joi.object({
+  category: Joi.string().max(100).required(),
+  parentId: Joi.number().optional().allow(null),
+});
 
-export const validateCreateCategory = async (
+export const updateCategorySchema = Joi.object({
+  category: Joi.string().max(100).optional(),
+  parentId: Joi.number().optional().allow(null),
+});
+
+async function categoryExists(categoryName: string): Promise<boolean> {
+  const categoryRepository = AppDataSource.getRepository(Category);
+  const existingCategory = await categoryRepository.findOne({
+    where: { category: categoryName },
+  });
+  return existingCategory !== null;
+}
+
+export async function validateCreateCategory(
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  const { category, parentId } = req.body;
+) {
+  const { category } = req.body;
 
-  // Input validation
-  if (typeof category !== "string" || category.trim() === "") {
-    return res.status(400).json({ message: "Invalid category name" });
-  }
-  if (
-    parentId !== undefined &&
-    parentId !== null &&
-    typeof parentId !== "number"
-  ) {
-    return res.status(400).json({ message: "Invalid parentId" });
+  const { error } = createCategorySchema.validate(req.body);
+  if (error) {
+    return res
+      .status(400)
+      .json({ message: "Validation error", details: error.details });
   }
 
-  // Check for duplicate category
-  const existingCategory = await categoryService.findByName(category);
-  if (existingCategory) {
+  if (await categoryExists(category)) {
     return res.status(400).json({ message: "Category already exists" });
   }
 
   next();
-};
+}
 
-export const validateUpdateCategory = async (
+export async function validateUpdateCategory(
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  const { id } = req.params;
-  const { category, parentId } = req.body;
+) {
+  const { category } = req.body;
 
-  // Input validation
-  if (typeof category !== "string" || category.trim() === "") {
-    return res.status(400).json({ message: "Invalid category name" });
-  }
-  if (
-    parentId !== undefined &&
-    parentId !== null &&
-    typeof parentId !== "number"
-  ) {
-    return res.status(400).json({ message: "Invalid parentId" });
+  const { error } = updateCategorySchema.validate(req.body);
+  if (error) {
+    return res
+      .status(400)
+      .json({ message: "Validation error", details: error.details });
   }
 
-  // Check for duplicate category
-  const existingCategory = await categoryService.findByName(category);
-  if (existingCategory && existingCategory.id !== Number(id)) {
+  if (category && (await categoryExists(category))) {
     return res.status(400).json({ message: "Category already exists" });
   }
 
   next();
-};
+}
