@@ -3,7 +3,7 @@ import { CategoryController } from "../controllers/CategoryController";
 import {
   validateCreateCategory,
   validateUpdateCategory,
-} from "../validations/categoryValidation";
+} from "../middlwares/validations/categoryValidation";
 
 const router = Router();
 const categoryController = new CategoryController();
