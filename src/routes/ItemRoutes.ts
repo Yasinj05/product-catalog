@@ -3,7 +3,7 @@ import { ItemController } from "../controllers/ItemController";
 import {
   validateCreateItem,
   validateUpdateItem,
-} from "../middlwares/validations/itemValidation";
+} from "../middlewares/validations/itemValidation";
 
 const router = Router();
 const itemController = new ItemController();
