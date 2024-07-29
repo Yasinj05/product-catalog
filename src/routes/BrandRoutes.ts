@@ -25,7 +25,7 @@ const brandController = new BrandController();
  *           description: The name of the brand
  *       example:
  *         id: 1
- *         brand: "Nike"
+ *         brand: "Apple"
  */
 
 /**
@@ -48,7 +48,7 @@ const brandController = new BrandController();
  *           schema:
  *             $ref: '#/components/schemas/Brand'
  *           example:
- *             brand: "Nike"
+ *             brand: "Apple"
  *     responses:
  *       201:
  *         description: The brand was successfully created
