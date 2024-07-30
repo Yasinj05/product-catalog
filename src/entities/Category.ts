@@ -17,9 +17,13 @@ export class Category {
   @Column({ nullable: true })
   parentId!: number;
 
-  @ManyToOne(() => Category, (category) => category.children)
+  @ManyToOne(() => Category, (category) => category.children, {
+    onDelete: "CASCADE",
+  })
   parent!: Category;
 
-  @OneToMany(() => Category, (category) => category.parent)
+  @OneToMany(() => Category, (category) => category.parent, {
+    cascade: ["insert", "update", "remove"],
+  })
   children!: Category[];
 }
