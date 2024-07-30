@@ -18,6 +18,7 @@ This project implements a RESTful API for managing a product catalog using Node.
 - TypeScript
 - MySQL with TypeORM
 - Joi for validation
+- Swagger for API documentation
 
 ## Getting Started 🚀
 
@@ -60,8 +61,12 @@ DATABASE_NAME=your-db-name
 5. **Start the server:**
 
 ```
-npm start
+npm run start
 ```
+
+## API Documentation 🧪
+
+The API is documented using Swagger. Once the server is running, you can access the documentation at `http://localhost:3000/api-docs`.
 
 ## API Endpoints 🖇️
 
