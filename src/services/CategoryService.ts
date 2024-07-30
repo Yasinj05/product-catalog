@@ -14,7 +14,11 @@ export class CategoryService {
   }
 
   async findAll() {
-    return this.categoryRepository.find({ relations: ["children"] });
+    const categories = await this.categoryRepository.find({
+      relations: ["children"],
+    });
+    const rootCategories = categories.filter((category) => !category.parentId);
+    return rootCategories;
   }
 
   async findOne(id: number) {
